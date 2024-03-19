@@ -10,5 +10,5 @@ createQuery = """
 	"""
 
 insertQuery = """
-INSERT INTO restaurants VALUES (?, ?, ?, ?)
+INSERT INTO restaurants (name, rating, bill, tags) VALUES (?, ?, ?, ?)
 """
