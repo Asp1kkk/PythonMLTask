@@ -1,4 +1,10 @@
 import bs4
+from bs4 import BeautifulSoup
+import requests
+import time
+from functions.functions import *
+from classes.restaurant import *
+from typing import List
 
 def getBill(item: bs4.element.Tag) -> str:
 	bill_span = item.find("span", {"class": "average-bill"})
@@ -24,3 +30,20 @@ def getRate(item: bs4.element.Tag) -> float:
 	float_value = float(text_content)
 
 	return float_value
+
+def crawl(BASE_URL: str, pages: int,) -> List[Restaurant]:
+	result = []
+	for i in range(pages):
+		response = requests.get(BASE_URL + f"?page={i+1}")
+		soup = BeautifulSoup(response.text, 'html.parser')
+
+		for item in soup.find("div", {"class": "catalog-list"}).find_all("div", {"class": "item"}):
+			name = getName(item)
+			tags = getTags(item)
+			bill = getBill(item)
+			rate = getRate(item)
+			result.append(Restaurant(name, tags, bill, rate))
+		
+		time.sleep(1)
+
+	return result
